@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: movie
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: movie
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false

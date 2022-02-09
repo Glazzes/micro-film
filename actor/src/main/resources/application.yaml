@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: actor
+
+  datasource:
+    password: dalmatian
+    username: glaze
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/connect
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false

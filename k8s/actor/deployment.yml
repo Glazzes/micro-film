@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actor
+  labels:
+    app: actor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: actor
+      labels:
+        app: actor
+    spec:
+      containers:
+        - name: actor
+          image: glazzess/actor-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: actor

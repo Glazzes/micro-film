@@ -1,0 +1,12 @@
+include(
+        "movie",
+        "shared",
+        "actor",
+        "clients"
+)
+
+rootProject.name = 'micro-movie'
+
+rootProject.children.forEach{
+    it.buildFileName = "${it.name}.gradle"
+}
