@@ -1,5 +1,6 @@
 package jvm.glaze.movie.controller;
 
+import jvm.glaze.clients.movie.MovieResponse;
 import jvm.glaze.movie.entities.dtos.CreatedMovieDTO;
 import jvm.glaze.movie.entities.dtos.MovieDTO;
 import jvm.glaze.movie.entities.models.MovieRequest;
@@ -32,6 +33,12 @@ public class MovieController {
     public Mono<ResponseEntity<CreatedMovieDTO>> save(@RequestBody MovieRequest movieRequest) {
         return movieService.save(movieRequest)
                 .map(it -> ResponseEntity.status(HttpStatus.CREATED).body(it));
+    }
+
+    @PostMapping("/{movieId}/actor/{actorId}")
+    public Mono<ResponseEntity<MovieResponse>> addActorToMovie(@PathVariable String movieId, @PathVariable String actorId) {
+        return movieService.addActorToMovie(movieId, actorId)
+                .map(it -> ResponseEntity.ok().body(it));
     }
 
     @DeleteMapping("/{id}")

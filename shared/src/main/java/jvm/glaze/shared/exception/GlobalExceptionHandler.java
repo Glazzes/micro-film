@@ -13,7 +13,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ExceptionDetails> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ExceptionDetails(ex.getMessage(), ex.getClass().getSimpleName(), LocalDateTime.now()));
+                .body(this.getDetails(ex));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDetails> handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(this.getDetails(ex));
+    }
+
+    private <T extends RuntimeException> ExceptionDetails getDetails(T ex) {
+        return new ExceptionDetails(ex.getMessage(), ex.getClass().getSimpleName(), LocalDateTime.now());
     }
 
     record ExceptionDetails(String message, String exception, LocalDateTime timeStamp){}

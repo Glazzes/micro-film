@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface MovieClient {
 
     @PostMapping("/api/v1/movie/{movieId}/actor/{actorId}")
-    void addActorToMovie(@PathVariable String actorId, @PathVariable String movieId);
+    MovieResponse addActorToMovie(@PathVariable String actorId, @PathVariable String movieId);
 
 }

@@ -1,10 +1,13 @@
 package jvm.glaze.movie.service;
 
+import jvm.glaze.clients.movie.MovieResponse;
+import jvm.glaze.clients.movie.Status;
 import jvm.glaze.movie.entities.Movie;
 import jvm.glaze.movie.entities.dtos.CreatedMovieDTO;
 import jvm.glaze.movie.entities.dtos.MovieDTO;
 import jvm.glaze.movie.entities.models.MovieRequest;
 import jvm.glaze.movie.repository.MovieRepository;
+import jvm.glaze.shared.exception.ResourceAlreadyExistsException;
 import jvm.glaze.shared.exception.ResourceNotFoundException;
 import jvm.glaze.shared.dtos.DeleteResponse;
 import lombok.AllArgsConstructor;
@@ -32,6 +35,26 @@ public class MovieService {
                 .log("Movie found")
                 .switchIfEmpty(Mono.error(new ResourceNotFoundException("Could not find movie with id " + id)))
                 .log("Movie not found");
+    }
+
+    public Mono<MovieResponse> addActorToMovie(String movieId, String actorId) {
+        return repository.findById(movieId)
+                .handle((Movie it, SynchronousSink<Movie> sink) -> {
+                    if(it.getActorIds().contains(actorId)){
+                        sink.error(new ResourceAlreadyExistsException("Actor is already part of the movie"));
+                    }else{
+                        sink.next(it);
+                    } })
+                .flatMap(it -> {
+                    it.getActorIds().add(actorId);
+                    return repository.save(it);
+                })
+                .map(it -> new MovieResponse(Status.ADDED, LocalDateTime.now()))
+                .switchIfEmpty(Mono.just(new MovieResponse(Status.MOVIE_NOT_EXISTS, LocalDateTime.now())))
+                .onErrorReturn(
+                        ex -> ex instanceof ResourceAlreadyExistsException,
+                        new MovieResponse(Status.ALREADY_EXISTS, LocalDateTime.now())
+                );
     }
 
     public Mono<DeleteResponse> deleteById(String movieId) {
